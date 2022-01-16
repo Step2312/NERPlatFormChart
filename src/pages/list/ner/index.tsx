@@ -12,20 +12,23 @@ import BIOPiePlot from './components/BIOPie';
 import BIGroupedColumnPlot from './components/BIGroupedColumn';
 import ColorWordPlot from './components/ColorWord';
 import NERMultiLinePlot from './components/NERMultiLine';
+import NERTable from './components/NERTable';
+import { P } from '@antv/g2plot';
+import NERStatistic from './components/NERStatistic';
 
 const { Statistic } = StatisticCard;
 const NerModel: React.FC = () => {
   const [responsive, setResponsive] = useState(false);
   return (
     <PageContainer>
-    <RcResizeObserver
+    {/* <RcResizeObserver
       key="resize-observer"
       onResize={(offset) => {
         setResponsive(offset.width < 596);
       }}
-    >
+    > */}
       <ProCard
-        title="数据概览"
+        title="单病历解析"
         extra={
           moment().format('YYYY年MM月DD日')
         }
@@ -34,96 +37,66 @@ const NerModel: React.FC = () => {
         bordered
       >
         <ProCard split="horizontal">
-          {/* <ProCard split="horizontal">
-            <ProCard split="vertical">
+          <ProCard split='horizontal'>
+            <StatisticCard
+              title="不同色块标准"
+              chart={
+                <ColorWordPlot/>
+              }
+            />
+            <ProCard split='vertical'>
               <StatisticCard
-                statistic={{
-                  title: '最长字符数',
-                  value: 15,
-                  // description: <Statistic title="较本月平均流量" value="8.04%" trend="down" />,
-                }}
+                title="BIO数目"
+                chart={
+                  <BIOPiePlot/>
+                  
+                }
               />
               <StatisticCard
-                statistic={{
-                  title: '最短字符数',
-                  value: 5,
-                  // description: <Statistic title="月同比" value="8.04%" trend="up" />,
-                }}
-              />
-            </ProCard>
-            <ProCard split="vertical">
-              <StatisticCard
-                statistic={{
-                  title: '平均字符数',
-                  value: 8.3,
-                  // description: <Statistic title="较本月平均流量" value="8.04%" trend="down" />,
-                }}
-              />
-              <StatisticCard
-                statistic={{
-                  title: 'O总数',
-                  value: 10,
-                  // description: <Statistic title="月同比" value="8.04%" trend="up" />,
-                }}
+                title="不同类别实体数目"
+                chart={
+                  <NERRadarPlot/>
+                }
               />
             </ProCard>
-          </ProCard> */}
-          <StatisticCard
-            title="不同色块标准"
-            chart={
-              <ColorWordPlot/>
-            }
-          />
-          <StatisticCard
-            title="BIO数目"
-            chart={
-              // <NERBaseLinePlot/>
-              // <NERColumnPlot/>
-              <BIOPiePlot/>
-              
-            }
-          />
-          <StatisticCard
-            title="不同类别BI占比"
-            chart={
-              // <NERGroupedRosePlot/>
-              <BIGroupedColumnPlot/>
-            }
-          />
-
+            <StatisticCard
+                title="不同类别BI占比"
+                chart={
+                  <BIGroupedColumnPlot/>
+                }
+            />
+          </ProCard>
+          <ProCard split='vertical'>
+            <StatisticCard
+              title="词云"
+              chart={
+                <NERWordCloud/>
+              }
+            />
+            <StatisticCard
+              title="网络辐射图"
+              chart={
+                <NERRadialTreeGraphPlot/>
+              }
+            />
+          </ProCard>
+          <ProCard split='horizontal'>
+            <StatisticCard
+             title="实体字符长度信息统计"
+             chart={
+               <NERStatistic/>
+             }
+            />
+            <StatisticCard
+             title="Top20实体统计"
+             chart={
+               <NERTable/>
+             }
+            />
+          </ProCard>
         </ProCard>
-       <ProCard split="horizontal">
-        <StatisticCard
-          title="不同类别实体数目"
-          chart={
-            <NERRadarPlot/>
-          }
-        />
-        <StatisticCard
-          title="网络辐射图"
-          chart={
-            <NERRadialTreeGraphPlot/>
-          }
-        />
-        <StatisticCard
-          title="词云"
-          chart={
-            <NERWordCloud/>
-          }
-        />
-        </ProCard>
-      </ProCard>
-      <ProCard>
-      {/* <Table dataSource={dataSource} columns={columns} />; */}
-      <StatisticCard
-          title="实体字符长度信息统计"
-          chart={
-            <NERMultiLinePlot/>
-          }
-        />
-      
-      </ProCard>
-    </RcResizeObserver>
+    </ProCard>
+    {/* </RcResizeObserver> */}
     </PageContainer>
   );
 };

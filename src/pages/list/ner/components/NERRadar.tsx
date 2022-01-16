@@ -19,29 +19,6 @@ const NERRadarPlot = () => {
         console.log('不同类别实体数据获取失败', error);
       });
   };
-  // 数据更新于 2021.01.09
-  // const data = [
-  //     {
-  //       category: 'B-BCZ',
-  //       value: 7,
-  //     },
-  //     {
-  //       category: 'B-SZKS',
-  //       value: 10,
-  //     },
-  //     {
-  //       category: 'B-YQJCJG',
-  //       value: 9,
-  //     },
-  //     {
-  //       category:'B-YWYY',
-  //       value:16,
-  //     },
-  //     {
-  //       category:'B-TIME',
-  //       value:11,
-  //     }
-  // ];
   const config = {
     data: data.map((d) => ({ ...d, star: Math.sqrt(d.value) })),
     xField: 'category',
