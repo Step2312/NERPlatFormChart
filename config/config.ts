@@ -63,7 +63,7 @@ export default defineConfig({
         {
           path: '/dashboard',
           redirect: '/dashboard/workplace',
-        }, 
+        },
         {
           name: '工作台',
           icon: 'smile',
@@ -74,6 +74,7 @@ export default defineConfig({
     },
     {
       path: '/list',
+
       icon: 'table',
       name: '脑卒中模型',
       routes: [
@@ -83,7 +84,7 @@ export default defineConfig({
           redirect: '/list/ner',
         },
         {
-          name: '模型A',
+          name: '单病历解析',
           icon: 'smile',
           path: '/list/ner',
           component: './list/ner',
@@ -92,6 +93,7 @@ export default defineConfig({
           name: '模型B',
           icon: 'smile',
           path: '/list/basic-list',
+          layout:false,
           component: './list/basic-list',
         },
         {

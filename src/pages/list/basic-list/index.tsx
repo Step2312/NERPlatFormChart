@@ -1,14 +1,16 @@
-import { PageContainer } from '@ant-design/pro-layout';
-import { Empty } from 'antd';
+import {Empty, Layout} from 'antd';
 import type { FC } from 'react';
+const { Header, Content, Footer } = Layout;
 
 
 
 export const BasicList: FC = () => {
   return(
-    <PageContainer>
-        <Empty/>
-    </PageContainer>
+    <Layout>
+      {/*<Header>Header</Header>*/}
+      <Content>Content</Content>
+      <Footer>Footer</Footer>
+    </Layout>
   )
 };
 

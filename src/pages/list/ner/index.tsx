@@ -1,105 +1,186 @@
-import React from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import NERWordCloud from "@/pages/list/ner/components/NERWordCloud";
-import { useState } from 'react';
-import ProCard, { StatisticCard } from '@ant-design/pro-card';
-import RcResizeObserver from 'rc-resize-observer';
+import React, { useRef, useState } from 'react';
+import type { FormInstance} from 'antd';
+import { BackTop, Col, Row } from 'antd';
+import ProCard from '@ant-design/pro-card';
+import { PageContainer } from '@ant-design/pro-layout';
+import {ProFormTextArea, StepsForm, ProFormSelect} from '@ant-design/pro-form';
+import { StatisticCard } from '@ant-design/pro-card';
 import NERRadarPlot from './components/NERRadar';
-import moment from 'moment';
 import NERRadialTreeGraphPlot from './components/NERRadialTreeGraph';
-
 import BIOPiePlot from './components/BIOPie';
 import BIGroupedColumnPlot from './components/BIGroupedColumn';
 import ColorWordPlot from './components/ColorWord';
-import NERMultiLinePlot from './components/NERMultiLine';
 import NERTable from './components/NERTable';
-import { P } from '@antv/g2plot';
 import NERStatistic from './components/NERStatistic';
+import NERWordCloudPlot from './components/NERWordCloud';
+import request from "umi-request";
+import {useRequest} from "ahooks";
+import {model_available} from "@/pages/list/ner/service";
+import {NERType} from "@/pages/list/ner/data";
+import BColumnplot from "@/pages/list/ner/components/BColumnplot";
 
-const { Statistic } = StatisticCard;
-const NerModel: React.FC = () => {
-  const [responsive, setResponsive] = useState(false);
+const NerModel: React.FC<Record<string, any>> = () => {
+  const [current, setCurrent] = useState<number>(0);
+  const formRef = useRef<FormInstance>();
+  const [content,setContent] = useState<NERType[]>([])
+  const {data} = useRequest(model_available)
+  const options = []
+  if(data!==undefined){
+    for(const i of data.data){
+      options.push({
+        label:i.name,
+        value:i.value
+      })
+    }
+  }
   return (
     <PageContainer>
-    {/* <RcResizeObserver
-      key="resize-observer"
-      onResize={(offset) => {
-        setResponsive(offset.width < 596);
-      }}
-    > */}
-      <ProCard
-        title="单病历解析"
-        extra={
-          moment().format('YYYY年MM月DD日')
-        }
-        split={responsive ? 'horizontal' : 'vertical'}
-        headerBordered
-        bordered
-      >
-        <ProCard split="horizontal">
-          <ProCard split='horizontal'>
-            <StatisticCard
-              title="不同色块标准"
-              chart={
-                <ColorWordPlot/>
+      <ProCard bordered={false}>
+        <StepsForm
+          current={current}
+          onCurrentChange={setCurrent}
+          containerStyle={{ width: '100%' }}
+          submitter={{
+            render: (props, dom) => {
+              if (props.step === 1) {
+                return null;
               }
+              return dom;
+            },
+          }}
+        >
+          <StepsForm.StepForm
+            formRef={formRef}
+            title="输入解析信息"
+            onFinish={async (values) => {
+              // console.log(values)
+              request.post("http://yapi.smart-xwork.cn/mock/126975/public_predict",{
+                  data:{
+                    text:values.medicaltext,
+                    model_id:values.nermodel
+                  }
+                })
+                .then(function (response){
+                  setContent(response)
+                  // console.log(response)
+                })
+                .catch(function (error){
+                  console.log(error)
+                })
+              if (content===[]) {
+                return false
+              } else {
+                return true
+              }
+            }}
+          >
+            <ProFormTextArea
+              name="medicaltext"
+              label="内容"
+              placeholder="请输入病历内容"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入病历文本',
+                },
+              ]}
             />
-            <ProCard split='vertical'>
-              <StatisticCard
-                title="BIO数目"
-                chart={
-                  <BIOPiePlot/>
-                  
-                }
-              />
-              <StatisticCard
-                title="不同类别实体数目"
-                chart={
-                  <NERRadarPlot/>
-                }
-              />
+            {/*<ProFormText*/}
+            {/*  label="模型"*/}
+            {/*  name="nermodel"*/}
+            {/*  rules={[*/}
+            {/*    {*/}
+            {/*      required: true,*/}
+            {/*      message: '请输入模型名称',*/}
+            {/*    },*/}
+            {/*  ]}*/}
+            {/*  placeholder="请输入模型名称"*/}
+            {/*/>*/}
+            <ProFormSelect
+            label="模型"
+            name="nermodel"
+            options={options}
+            />
+          </StepsForm.StepForm>
+          <StepsForm.StepForm title="解析结果">
+            <ProCard split='horizontal' bordered>
+              <ProCard title='不同颜色标注'>
+                <StatisticCard
+                  chart={
+                    <ColorWordPlot data={content}/>
+                  }
+                />
+              </ProCard>
+              <ProCard split='vertical'>
+                <Row>
+                  <Col span={12}>
+                    <ProCard title='BIO数目' bordered>
+                      <StatisticCard
+                        chart={
+                          <BIOPiePlot data={content}/>
+                        }
+                      />
+                    </ProCard>
+                  </Col>
+                  <Col span={12}>
+                    <ProCard title='不同类别实体数目' bordered>
+                      <StatisticCard
+                        chart={
+                          <NERRadarPlot data={content}/>
+                        }
+                      />
+                    </ProCard>
+                  </Col>
+                </Row>
+              </ProCard>
+              <ProCard split='horizontal'>
+                <ProCard title='不同实体占比'>
+                  <StatisticCard
+                    chart={
+                      // <BIGroupedColumnPlot data={content}/>
+                      <BColumnplot data={content}/>
+                    }
+                  />
+                </ProCard>
+              </ProCard>
+              <ProCard split='horizontal'>
+                <Row>
+                  <Col span={12}>
+                    <ProCard title='词云'>
+                      <StatisticCard
+                        chart={
+                          <NERWordCloudPlot data={content}/>
+                        }
+                      />
+                    </ProCard>
+                  </Col>
+                  <Col span={12}>
+                    <ProCard title='网络图' bordered>
+                      <StatisticCard
+                        chart={
+                          <NERRadialTreeGraphPlot data={content}/>
+                        }
+                      />
+                    </ProCard>
+                  </Col>
+                </Row>
+              </ProCard>
+              <ProCard split='horizontal' title="字符长度信息统计">
+                <NERStatistic data={content}/>
+              </ProCard>
+              <ProCard title="Top20实体统计">
+                <NERTable data={content}/>
+              </ProCard>
             </ProCard>
-            <StatisticCard
-                title="不同类别BI占比"
-                chart={
-                  <BIGroupedColumnPlot/>
-                }
-            />
-          </ProCard>
-          <ProCard split='vertical'>
-            <StatisticCard
-              title="词云"
-              chart={
-                <NERWordCloud/>
-              }
-            />
-            <StatisticCard
-              title="网络辐射图"
-              chart={
-                <NERRadialTreeGraphPlot/>
-              }
-            />
-          </ProCard>
-          <ProCard split='horizontal'>
-            <StatisticCard
-             title="实体字符长度信息统计"
-             chart={
-               <NERStatistic/>
-             }
-            />
-            <StatisticCard
-             title="Top20实体统计"
-             chart={
-               <NERTable/>
-             }
-            />
-          </ProCard>
-        </ProCard>
-    </ProCard>
-    {/* </RcResizeObserver> */}
+          </StepsForm.StepForm>
+        </StepsForm>
+        <BackTop>
+          <div style={{ height: 40, width: 40, lineHeight: '40px', borderRadius: 4, backgroundColor: '#1088e9', color: '#fff', textAlign: 'center', fontSize: 14, }}>UP</div>
+          {/* <UpSquareTwoTone style={{height: 40,width: 40,lineHeight: '40px'}}/> */}
+        </BackTop>
+      </ProCard>
     </PageContainer>
   );
 };
 
 export default NerModel;
-

@@ -1,27 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import { Radar } from '@ant-design/charts';
+import {Props} from '../data';
 
-// 雷达图
-const NERRadarPlot = () => {
-  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    asyncFetch();
-  }, []);
+type RadarType={
+  type: string,
+  value: number
+}
+// 雷达图 不同类别实体
+const NERRadarPlot = (props: Props) => {
+  const {data} = props
+  const btype: RadarType[] = []
+  for(const i in data){
+    if(data[i].type.startsWith("B")){
+      btype.push({
+        type:data[i].type,
+        value:1
+      })
+    }
+  }
+  const tmp = []
+  for(const i of btype){
+    if(i.value===1){
+      let count = 0
+      for(const j of btype){
+        if(i.type===j.type&&j.value===1){
+          j.value=0
+          count +=1
+        }
+      }
+      tmp.push({
+        type:i.type.split("-")[1],
+        value:count
+      })
+    }
+    i.value =0
+  }
 
-  const asyncFetch = () => {
-    fetch('http://yapi.smart-xwork.cn/mock/126975/radardata')
-      .then((response) => response.json())
-      .then((json) => setData(json.data)
-      )
-      .catch((error) => {
-        console.log('不同类别实体数据获取失败', error);
-      });
-  };
   const config = {
-    data: data.map((d) => ({ ...d, star: Math.sqrt(d.value) })),
-    xField: 'category',
+    data: tmp.map((d) => ({ ...d, star: Math.sqrt(d.value) })),
+    xField: 'type',
     yField: 'value',
     appendPadding: [0, 10, 0, 10],
     meta: {
@@ -29,7 +46,7 @@ const NERRadarPlot = () => {
         alias: 'star 数量',
         min: 0,
         nice: true,
-        formatter: (v) => Number(v).toFixed(2),
+        formatter: (v: number) => Number(v).toFixed(2),
       },
     },
     xAxis: {

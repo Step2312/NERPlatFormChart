@@ -5,10 +5,9 @@ import { Empty } from 'antd';
 const CardList = () => {
 
   return (
-    <PageContainer>
-      <Empty/>
-      
-    </PageContainer>
+    <div>
+      a
+    </div>
   );
 };
 

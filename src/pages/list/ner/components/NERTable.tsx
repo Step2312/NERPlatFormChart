@@ -1,213 +1,90 @@
-import React, { useRef } from 'react';
-import { PlusOutlined, EllipsisOutlined } from '@ant-design/icons';
-import { Button, Tag, Space, Menu, Dropdown } from 'antd';
+import  { useRef } from 'react';
 import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import request from 'umi-request';
-
-type NERType = {
-  id:number,
-  content:string;
-  nertype:string;
-  nerlength:number;
-};
-let valueEnum =  {
-  "B":{
-      "text":"B",
-      "content":"B"
-  },
-  "I":{
-      "text":"I",
-      "content":"I"
-  },
-  "I-YWYY":{
-      "text":"I-YWYY",
-      "content":"I-YWYY"
-    },
-    "B-BCZYZZ":{
-      "text":"B-BCZYZZ",
-      "content":"B-BCZYZZ"
-    },
-    "I-BCZYZZ":{
-      "text":"I-BCZYZZ",
-      "content":"I-BCZYZZ"
-    },
-    "B-YQJCXM":{
-      "text":"B-YQJCXM",
-      "content":"B-YQJCXM"
-    },
-    "I-YQJCXM":{
-      "text":"I-YQJCXM",
-      "content":"I-YQJCXM"
-    },
-    "B-CCFBSJ":{
-      "text":"B-CCFBSJ",
-      "content":"B-CCFBSJ"
-    },
-    "I-CCFBSJ":{
-      "text":"I-CCFBSJ",
-      "content":"I-CCFBSJ"
-    },
-    "B-CCFBZYZZ":{
-      "text":"B-CCFBZYZZ",
-      "content":"B-CCFBZYZZ"
-    },
-    "I-CCFBZYZZ":{
-      "text":"I-CCFBZYZZ",
-      "content":"I-CCFBZYZZ"
-    },
-    "B-SZKS":{
-      "text":"B-SZKS",
-      "content":"B-SZKS"
-    },
-    "I-SZKS":{
-      "text":"I-SZKS",
-      "content":"I-SZKS"
-    },
-    "B-YQJCJG":{
-      "text":"B-YQJCJG",
-      "content":"B-YQJCJG"
-    },
-    "I-YQJCJG":{
-      "text":"I-YQJCJG",
-      "content":"I-YQJCJG"
-    },
-    "B-RYCBZD":{
-      "text":"B-RYCBZD",
-      "content":"B-RYCBZD"
-    },
-    "I-RYCBZD":{
-      "text":"I-RYCBZD",
-      "content":"I-RYCBZD"
-    },
-    "B-BCZ":{
-      "text":"B-BCZ",
-      "content":"B-BCZ"
-    },
-    "I-BCZ":{
-      "text":"I-BCZ",
-      "content":"I-BCZ"
-    },
-    "B-TIME":{
-      "text":"B-TIME",
-      "content":"B-TIME"
-    },
-    "I-TIME":{
-      "text":"B-TIME",
-      "content":"B-TIME"
-    },
-    "B-YWYY":{
-      "text":"B-YWYY",
-      "content":"B-YWYY"
-    },
-    "I-YQJJYPMC":{
-      "text":"I-YQJJYPMC",
-      "content":"I-YQJJYPMC"
-    },
-    "I-YQJJFS":{
-      "text":"I-YQJJFS",
-      "content":"I-YQJJFS"
-    },
-    "B-YQJJYPMC":{
-      "text":"B-YQJJYPMC",
-      "content":"B-YQJJYPMC"
-    },
-    "B-YQZLJGMC":{
-      "text":"B-YQZLJGMC",
-      "content":"B-YQZLJGMC"
-    },
-    "I-YQZLJGMC":{
-      "text":"I-YQZLJGMC",
-      "content":"I-YQZLJGMC"
-    },
-    "B-BYJCJG":{
-      "text":"B-BYJCJG",
-      "content":"B-BYJCJG"
-    },
-    "I-BYJCJG":{
-      "text":"I-BYJCJG",
-      "content":"I-BYJCJG"
-    },
-    "I-WYZLFF":{
-      "text":"I-WYZLFF",
-      "content":"I-WYZLFF"
-    },
-    "I-WYZLYW":{
-      "text":"I-WYZLYW",
-      "content":"I-WYZLYW"
-    },
-    "I-LBYJCXMJG":{
-      "text":"I-LBYJCXMJG",
-      "content":"I-LBYJCXMJG"
-    },
-    "B-LBYJCXMJG":{
-      "text":"B-LBYJCXMJG",
-      "content":"B-LBYJCXMJG"
-    },
-}
-await fetch('http://yapi.smart-xwork.cn/mock/126975/nertablevalueenum')
-.then(response => response.json())
-.then(json => valueEnum=json)
-.catch(err => console.log('实体列表请求失败', err)); 
+import ProTable from '@ant-design/pro-table';
+import {NERType, Props} from "@/pages/list/ner/data";
 
 
-const columns: ProColumns<NERType>[] = [
-  {
-    dataIndex: 'index',
-    hideInSearch:true,
-    valueType: 'indexBorder',
-    width: 48,
-  },
-  {
-    title: '实体内容',
-    hideInSearch: true,
-    dataIndex: 'content',
-    copyable: true,
-    ellipsis: true,
-    tip: '内容过长会自动收缩',
-    formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项',
-        },
-      ],
-    },
-  },
-  {
-    title: '实体类别',
-    dataIndex: 'nertype',
-    filters: true,
-    onFilter: true,
-    hideInSearch: true,
-    valueType: 'select',
-    valueEnum,
-  },
-  {
-    title: '实体长度',
-    key: '实体长度',
-    dataIndex: 'nerlength',
-    // valueType: 'dateTime',
-    sorter: (a, b) => a.nerlength - b.nerlength,
-    hideInSearch: true,
-  },
-];
 
-
-export default () => {
+export default (props: Props) => {
   const actionRef = useRef<ActionType>();
+  const {data} = props
+  const colenum = {}
+  const tmp = []
+
+  // for(const i in data){
+  //   if(!colenum[data[i].type]&&data[i].type.startsWith("B")){
+  //     colenum[data[i].type]={
+  //       text:data[i].type.split("-")[1],
+  //       content:data[i].type
+  //     }
+  //   }
+  // }
+  // 从data中取得长度前20的实体
+  for(let i =0;i<data.length-1;i++){
+    if(data[i].type.startsWith("B")){
+      tmp.push({
+        content:data[i].content+data[i+1].content,
+        nertype:data[i].type.split("-")[1],
+        nerlength:data[i].content.length+data[i+1].content.length
+      })
+    }
+  }
+  tmp.sort((m,n)=>n.nerlength-m.nerlength)
+  // 从长度前20的实体中找出它们的类型
+  for(const i of tmp){
+    if(!colenum[i.nertype]){
+      colenum[i.nertype]={
+        text:i.nertype,
+        content:i.nertype
+      }
+    }
+  }
+  const columns: ProColumns<NERType>[] = [
+    {
+      dataIndex: 'index',
+      hideInSearch:true,
+      valueType: 'indexBorder',
+      width: 48,
+    },
+    {
+      title: '实体内容',
+      hideInSearch: true,
+      dataIndex: 'content',
+      copyable: true,
+      ellipsis: true,
+      tip: '内容过长会自动收缩',
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      title: '实体类别',
+      dataIndex: 'nertype',
+      filters: true,
+      onFilter: true,
+      hideInSearch: true,
+      valueType: 'select',
+      valueEnum: colenum
+    },
+    {
+      title: '实体长度',
+      key: '实体长度',
+      dataIndex: 'nerlength',
+      // valueType: 'dateTime',
+      sorter: (a, b) => a.nerlength - b.nerlength,
+      hideInSearch: true,
+    },
+  ];
   return (
     <ProTable<NERType>
       columns={columns}
       actionRef={actionRef}
-      request={async (params = {}, sort, filter) => {
-        console.log(sort, filter);
-        return request<{
-          data: NERType[];
-        }>('http://yapi.smart-xwork.cn/mock/126975/nertabledata', {
-          params,
-        });
-      }}
+      dataSource={tmp.splice(0,20)}
       editable={{
         type: 'multiple',
       }}
@@ -220,7 +97,8 @@ export default () => {
       //   labelWidth: 'auto',
       // }}
       pagination={{
-        pageSize: 5,
+        pageSize: 10,
+        pageSizeOptions:["10","20"]
       }}
       search={false}
     />

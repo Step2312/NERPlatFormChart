@@ -1,70 +1,31 @@
-import React, { useState, useEffect } from 'react';
 import { WordCloud } from '@ant-design/plots';
+import {Props} from "@/pages/list/ner/data";
 
-const NERWordCloudPlot = () => {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    asyncFetch();
-  }, []);
-
-  const asyncFetch = () => {
-    fetch('http://yapi.smart-xwork.cn/mock/126975/nerwordclouddata')
-      .then((response) => response.json())
-      .then((json) => setData(json.data))
-      .catch((error) => {
-        console.log('fetch data failed', error);
-      });
-  };
+const NERWordCloudPlot = (props: Props) => {
+  // const {data} =useRequest(nerdata)
+  const {data} = props
+  const tmp = []
+  for (let i=0;i<data.length-2;i++){
+    if (data[i].type.startsWith("B")){
+      tmp.push({
+        name:data[i].content+data[i+1].content,
+        value:data[i].content.length+data[i+1].content.length
+      })
+    }
+  }
   const config = {
-    data,
+    data:tmp,
+    autoFit:true,
     wordField: 'name',
     weightField: 'value',
     colorField: 'name',
-    // imageMask: 'https://gw.alipayobjects.com/mdn/rms_2274c3/afts/img/A*07tdTIOmvlYAAAAAAAAAAABkARQnAQ',
+    imageMask: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.51yuansu.com%2Fpic3%2Fcover%2F01%2F39%2F41%2F5926fef254326_610.jpg&refer=http%3A%2F%2Fpic.51yuansu.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1648032715&t=896ddaa484512290922b214d62ad5dfa',
     wordStyle: {
       fontFamily: 'Verdana',
-      fontSize: [8, 32],
+      fontSize: [24,32,40,48],
     },
   };
 
   return <WordCloud {...config} />;
 };
-// import React, { useState, useEffect } from 'react';
-// import ReactDOM from 'react-dom';
-// import { WordCloud } from '@ant-design/plots';
-
-// const NERWordCloudPlot = () => {
-//   const [data, setData] = useState([]);
-
-//   useEffect(() => {
-//     asyncFetch();
-//   }, []);
-
-//   const asyncFetch = () => {
-//     fetch('http://yapi.smart-xwork.cn/mock/126975/nerwordclouddata')
-//       .then((response) => response.json())
-//       .then((json) => setData(json.data))
-//       .catch((error) => {
-//         console.log('fetch data failed', error);
-//       });
-//   };
-//   const config = {
-//     data,
-//     autoFit:true,
-//     wordField: 'name',
-//     weightField: 'value',
-//     colorField: 'name',
-//     wordStyle: {
-//       fontFamily: 'Verdana',
-//       fontSize: [8, 32],
-//       rotation: 0,
-//     },
-//     // 返回值设置成一个 [0, 1) 区间内的值，
-//     // 可以让每次渲染的位置相同（前提是每次的宽高一致）。
-//     random: () => 0.5,
-//   };
-
-//   return <WordCloud {...config} />;
-// };
 export default NERWordCloudPlot

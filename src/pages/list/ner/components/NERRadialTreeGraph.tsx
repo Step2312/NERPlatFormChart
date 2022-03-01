@@ -1,160 +1,162 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { useState, useEffect } from 'react';
-import { RadialTreeGraph } from '@ant-design/charts';
+import { RadialTreeGraph } from '@ant-design/graphs';
+import {NERType, Props} from '../data';
 
-const NERRadialTreeGraphPlot = () => {
 
-  // const [data, setData] = useState([]);
-
-  // useEffect(() => {
-  //   asyncFetch();
-  // }, []);
-
-  // const asyncFetch = () => {
-  //   fetch('http://yapi.smart-xwork.cn/mock/126975/radialtreegraphdata')
-  //     .then((response) => response.json())
-  //     .then((json) => setData(json.data))
-  //     .catch((error) => {
-  //       console.log('不同类别实体数据获取失败', error);
-  //     });
-  // };
-  const data = {
-    id: 'ner',
-    children: [
-      {
-        id: 'B',
-        children: [
-          {
-            id:'B-BCZ',
-            children:[
-              {id:'心神安可',value:'心神安可'},
-              {id:'神志清',value:'神志清'},
-              {id:'精神尚可',value:'精神尚可'},
-              {id:'纳眠一般',value:'纳眠一般'}
-            ],
-            value:'BCZ'
-          },
-          {
-            id:'B-BCZYZZ',
-            children:[
-              {id:'出',value:'出'},
-              {id:'右肢身心不助',value:'右肢身心不助'},
-              {id:'右手臂持续或欠斜',value:'右手臂持续或欠斜'},
-              {id:'右上臂行走欠难',value:'右上臂行走欠难'}
-            ],
-            value:'BCZYZZ'
-          },
-          {
-            id:'B-YQJCXM',
-            children:[
-              {id:'头颅骨T',value:'头颅骨T'},
-              {id:'头颅内T',value:'头颅内T'}
-            ],
-            value:'YQJCXM'
-          },
-          {
-            id:'B-CCFBSJ',
-            children:[
-              {id:'几天前有明显诱因',value:'几天前有明显诱因'},
-              {id:'2周后有明显诱因',value:'2周后有明显诱因'},
-              {id:'2月前无明显诱因',value:'2月前无明显诱因'},
-            ],
-            value:'CCFBSJ'
-          },
-          
-        ],
-        value: 'B',
-      },
-      {
-        id: 'I',
-        children: [
-          {
-            id: 'I-BCZ',
-            children: [
-              { id:'发热咳嗽',value:'发热咳嗽'},
-              { id:'腹痛腹泻',value:'腹痛腹泻'},
-              { id:'食睡眠可',value:'食睡眠可'},
-              {id:'小便自控',value:'小便自控'},
-            ],
-            value: 'I-BCZ',
-          },
-          {
-            id: 'I-SZKS',
-            children: [
-              { id:'科',value:'科'},
-              { id:'诊',value:'诊'}
-            ],
-            value: 'I-SZKS',
-          },
-
-        ],
-        value: 'I',
-      },
-    ],
-    value: '实体',
+function process(d: NERType[]){
+  const tmp = {
+    id: 'NER',
+    children: [],
+    value: '文本',
+  };
+  const nertype = {}
+  const status = {
+    btype:1,
+    itype:1,
+    otype:1
   }
-  const themeColor = '#73B3D1';
+  //v2
+  for(let i =0;i<d.length-1;i++){
+    if (!nertype[d[i].type]&&d[i].type.startsWith("B")){
+      tmp.children.push({
+        id:d[i].type,
+        children:[],
+        value:d[i].type.split("-")[1]
+      })
+
+      nertype[d[i].type]=true
+    }
+    for (const j of tmp.children){
+        if (j.id===d[i].type){
+          j.children.push({
+            id:d[i].content+d[i+1].content+Math.random().toString(),
+            value:d[i].content+d[i+1].content
+          })
+        }
+      }
+
+  }
+  //v1
+  // for(const i of d){
+  //   if (i.type.startsWith("B")){
+  //     if(status.btype===1){
+  //       status.btype = 0
+  //       tmp.children.push({
+  //         id:"B",
+  //         children:[],
+  //         value:"B"
+  //       })
+  //     }
+  //     for(let j=0;j<tmp.children.length;j++){
+  //       if(tmp.children[j].id==="B"&&!nertype[i.type]){
+  //         tmp.children[j].children.push({
+  //           id:i.type,
+  //           children:[],
+  //           value:i.type
+  //         })
+  //         nertype[i.type] = 1
+  //         const a = {}
+  //         for(let k=0;k<d.length-1;k++){
+  //           if (d[k].type===i.type){
+  //             if(!a[d[k].content]){
+  //               for (let m=0;m<tmp.children[j].children.length;m++){
+  //                 if(tmp.children[j].children[m].id===d[k].type){
+  //                   tmp.children[j].children[m].children.push({
+  //                     id:d[k].content+Math.random().toString(),
+  //                     value:d[k].content+d[k+1].content,
+  //                   })
+  //                 }
+  //               }
+  //               a[k.content]=1
+  //             }
+  //           }
+  //         }
+  //
+  //       }
+  //     }
+  //
+  //   }
+  //   // if (i.type.startsWith("I")){
+  //   //   if(status.itype===1){
+  //   //     status.itype = 0
+  //   //     tmp.children.push({
+  //   //       id:"I",
+  //   //       children:[],
+  //   //       value:"I"
+  //   //     })
+  //   //   }
+  //   //   for(let j=0;j<tmp.children.length;j++){
+  //   //     if(tmp.children[j].id==="I"&&!nertype[i.type]){
+  //   //       tmp.children[j].children.push({
+  //   //         id:i.type,
+  //   //         children:[],
+  //   //         value:i.type
+  //   //       })
+  //   //       nertype[i.type] = 1
+  //   //       const a = {}
+  //   //       for(const k of d){
+  //   //         if (k.type===i.type){
+  //   //           if(!a[k.content]){
+  //   //             for (let m=0;m<tmp.children[j].children.length;m++){
+  //   //               if(tmp.children[j].children[m].id===k.type){
+  //   //                 tmp.children[j].children[m].children.push({
+  //   //                   id:k.content+Math.random().toString(),
+  //   //                   value:k.content,
+  //   //                 })
+  //   //               }
+  //   //             }
+  //   //             a[k.content]=1
+  //   //           }
+  //   //         }
+  //   //       }
+  //   //
+  //   //     }
+  //   //   }
+  //   //
+  //   // }
+  //   // if (i.type.startsWith("O")){
+  //   //   if(status.otype===1){
+  //   //     status.otype=0
+  //   //     tmp.children.push({
+  //   //       id:"O",
+  //   //       children:[],
+  //   //       value:"O"
+  //   //     })
+  //   //   }
+  //   //   // const a = {}
+  //   //   if(!nertype[i.content]){
+  //   //     for(let j = 0;j<tmp.children.length;j++){
+  //   //       if (tmp.children[j].id==="O"){
+  //   //         tmp.children[j].children.push({
+  //   //           id:i.content+Math.random().toString(),
+  //   //           value:i.content
+  //   //         })
+  //   //
+  //   //       }
+  //   //     }
+  //   //     nertype[i.content]=1
+  //   //   }
+  //   // }
+  // }
+  console.log(tmp)
+  return tmp
+}
+const NERRadialTreeGraphPlot = (props: Props) => {
+  const {data} = props
+  // console.log()
   const config = {
-    data,
+    data:process(data),
     nodeCfg: {
-      size: 30,
       type: 'circle',
-      label: {
-        style: {
-          fill: '#fff',
-        },
-      },
-      style: {
-        fill: themeColor,
-        stroke: '#0E1155',
-        lineWidth: 2,
-        strokeOpacity: 0.45,
-        shadowColor: themeColor,
-        shadowBlur: 25,
-      },
-      nodeStateStyles: {
-        hover: {
-          stroke: themeColor,
-          lineWidth: 2,
-          strokeOpacity: 1,
-        },
-      },
     },
-    edgeCfg: {
-      style: {
-        stroke: themeColor,
-        shadowColor: themeColor,
-        shadowBlur: 20,
-      },
-      endArrow: {
-        type: 'triangle',
-        fill: themeColor,
-        d: 15,
-        size: 8,
-      },
-      edgeStateStyles: {
-        hover: {
-          stroke: themeColor,
-          lineWidth: 2,
-        },
-      },
+    markerCfg: {
+      show: true,
+    },
+    edgeCfg:{
+      type: "cubic"
     },
     behaviors: ['drag-canvas', 'zoom-canvas', 'drag-node'],
   };
-
-  return (
-    <div
-      id="dom"
-      style={{
-        background: '#0E1155',
-        height: '400px',
-      }}
-    >
-      <RadialTreeGraph {...config} />
-    </div>
-  );
+  return <RadialTreeGraph {...config} />;
 };
 
-
-export default NERRadialTreeGraphPlot
+export default NERRadialTreeGraphPlot;
