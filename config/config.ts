@@ -23,6 +23,7 @@ export default defineConfig({
     ie: 11,
   },
   // umi routes: https://umijs.org/docs/routing
+  /** 这里的routes会被渲染为左边的菜单栏，虽然在菜单栏中不存在，但是可以通过URL访问*/
   routes: [
     {
       path: '/user',
@@ -96,12 +97,12 @@ export default defineConfig({
           layout:false,
           component: './list/basic-list',
         },
-        {
-          name: '模型C',
-          icon: 'smile',
-          path: '/list/card-list',
-          component: './list/card-list',
-        },
+        // {
+        //   name: '模型C',
+        //   icon: 'smile',
+        //   path: '/list/card-list',
+        //   component: './list/card-list',
+        // },
       ],
     },
     {

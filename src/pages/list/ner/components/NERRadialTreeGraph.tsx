@@ -137,7 +137,7 @@ function process(d: NERType[]){
   //   //   }
   //   // }
   // }
-  console.log(tmp)
+  // console.log(tmp)
   return tmp
 }
 const NERRadialTreeGraphPlot = (props: Props) => {

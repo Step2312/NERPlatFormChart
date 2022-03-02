@@ -166,10 +166,11 @@ const NerModel: React.FC<Record<string, any>> = () => {
                 </Row>
               </ProCard>
               <ProCard split='horizontal' title="字符长度信息统计">
+                {/*unique key*/}
                 <NERStatistic data={content}/>
               </ProCard>
               <ProCard title="Top20实体统计">
-                <NERTable data={content}/>
+                {/*<NERTable data={content}/>*/}
               </ProCard>
             </ProCard>
           </StepsForm.StepForm>

@@ -19,6 +19,7 @@ export default [
       { component: './404' },
     ],
   },
+  // {name:'体验',icon: 'table',path:'/list/preview',component: ''}
   { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
   { path: '/', redirect: '/welcome' },
   { component: './404' },

@@ -89,7 +89,7 @@ export default (props: Props) => {
         type: 'multiple',
       }}
       columnsState={{
-        persistenceKey: 'ner',
+        persistenceKey: 'NERTable',
         persistenceType: 'localStorage',
       }}
       rowKey="id"

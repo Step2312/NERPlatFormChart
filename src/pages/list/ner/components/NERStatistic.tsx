@@ -92,6 +92,7 @@ export default (props: Props) => {
     {
       dataIndex: 'index',
       hideInSearch:true,
+      key:'index'+Math.random().toString(),
       valueType: 'indexBorder',
       width: 48,
     },
@@ -100,6 +101,7 @@ export default (props: Props) => {
       dataIndex: 'content',
       copyable: true,
       // ellipsis: true,
+      key:'content',
       filters: true,
       onFilter: true,
       hideInSearch: true,
@@ -108,32 +110,32 @@ export default (props: Props) => {
     },
     {
       title: '最长字符数',
-      key: '最长字符数',
+      key: 'long',
       dataIndex: 'long',
     },
     {
       title: '最短字符数',
-      key: '实体长度',
+      key: 'short',
       dataIndex: 'short',
     },
     {
       title: '平均字符数',
-      key: '平均字符数',
+      key: 'average',
       dataIndex: 'average',
     },
     {
       title: '25%字符数',
-      key: '25%字符数',
+      key: 'quarter',
       dataIndex: 'quarter',
     },
     {
       title: '50%字符数',
-      key: '50%字符数',
+      key: 'half',
       dataIndex: 'half',
     },
     {
       title: '75%字符数',
-      key: '75%字符数',
+      key: 'threequarter',
       dataIndex: 'threequarter',
     },
 
@@ -150,7 +152,7 @@ export default (props: Props) => {
         persistenceKey: 'ner',
         persistenceType: 'localStorage',
       }}
-      rowKey="id"
+      // rowKey={Math.random().toString()}
       // search={{
       //   labelWidth: 'auto',
       // }}
