@@ -1,7 +1,7 @@
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout';
 import { PageLoading } from '@ant-design/pro-layout';
 import type { RunTimeLayoutConfig } from 'umi';
-import { history} from 'umi';
+import { history } from 'umi';
 // import { history, Link } from 'umi';
 import RightContent from '@/components/RightContent';
 // import Footer from '@/components/Footer';
@@ -10,7 +10,7 @@ import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
 
 // const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
-const previewPath = '/list/preview'
+const previewPath = '/list/nerpreview';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -31,19 +31,22 @@ export async function getInitialState(): Promise<{
       // console.log(msg)
       return msg.data;
     } catch (error) {
-      console.log(error)
-      history.push(previewPath);
+      console.log(error);
+      // history.push(previewPath);
     }
     return undefined;
   };
   // 如果是登录页面，不执行
-  if (history.location.pathname !== (loginPath||previewPath)) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: {},
-    };
+  if (history.location.pathname !== loginPath) {
+    if (history.location.pathname !== previewPath) {
+      console.log(history.location.pathname);
+      const currentUser = await fetchUserInfo();
+      return {
+        fetchUserInfo,
+        currentUser,
+        settings: {},
+      };
+    }
   }
   return {
     fetchUserInfo,
@@ -63,17 +66,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== (loginPath||previewPath)){
+      // if (!initialState?.currentUser && location.pathname !== (loginPath||previewPath)){
+      //   // if (location)
+      //   history.push(loginPath);
+      // }
+      if (location.pathname === previewPath) {
+        // console.log("1")
+        history.push(previewPath);
+      } else if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
-      // if (location.pathname===previewPath){
-      //   console.log("1")
-      //   // history.push(previewPath)
-      // }else if (!initialState?.currentUser && location.pathname !== loginPath){
-      //   console.log("2")
-      //   history.push(loginPath)
-      // }
-
     },
     menuHeaderRender: undefined,
     // 自定义 403 页面

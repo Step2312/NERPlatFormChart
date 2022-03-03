@@ -75,11 +75,9 @@ export default defineConfig({
     },
     {
       path: '/list',
-
       icon: 'table',
       name: '脑卒中模型',
       routes: [
-
         {
           path: '/list',
           redirect: '/list/ner',
@@ -91,18 +89,19 @@ export default defineConfig({
           component: './list/ner',
         },
         {
+          name: 'Preview',
+          icon: 'smile',
+          path: '/list/nerpreview',
+          layout: false,
+          hideInMenu: true,
+          component: './list/nerpreview',
+        },
+        {
           name: '模型B',
           icon: 'smile',
-          path: '/list/basic-list',
-          layout:false,
-          component: './list/basic-list',
+          path: '/list/card-list',
+          component: './list/card-list',
         },
-        // {
-        //   name: '模型C',
-        //   icon: 'smile',
-        //   path: '/list/card-list',
-        //   component: './list/card-list',
-        // },
       ],
     },
     {
