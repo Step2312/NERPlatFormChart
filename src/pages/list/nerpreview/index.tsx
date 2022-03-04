@@ -68,7 +68,7 @@ export const BasicList: FC = () => {
               });
           }}
         >
-          <Form.Item rules={[{ required: true }]}>
+          <Form.Item rules={[{ required: true }]} noStyle={true}>
             <ProFormTextArea
               style={{ height: '100%' }}
               name="text"
@@ -82,7 +82,7 @@ export const BasicList: FC = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item rules={[{ required: true }]}>
+          <Form.Item rules={[{ required: true }]} noStyle={true}>
             <Row gutter={5}>
               <Col span={12}>
                 <ProFormSelect
